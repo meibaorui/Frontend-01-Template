@@ -1,0 +1,69 @@
+//获取精确小数
+function getFranction(number){
+    if(number.toString().split('.')[1]){
+        var xsd=number.toString().split('.')[1].length;
+    }else{
+        xsd=0
+    }
+    var integer=Math.floor(number);
+    //小数乘10后也会失去精读，因此向下取整数
+    return (Math.floor(number*Math.pow(10,xsd))-integer*Math.pow(10,xsd))/Math.pow(10,xsd);
+}
+
+//小数精确乘法
+function mult(num1,num2){
+    if(num1.toString().split('.')[1]){
+        var xsd1=num1.toString().split('.')[1].length;
+    }else{
+        xsd1=0
+    }
+    if(num2.toString().split('.')[1]){
+        var xsd1=num2.toString().split('.')[1].length;
+    }else{
+        xsd2=0
+    }
+    //小数乘10后也会失去精读，因此向下取整数
+    var num1Pow=Math.floor(num1*Math.pow(10,xsd1));
+    var num2Pow=Math.floor(num2*Math.pow(10,xsd2));
+    return (num1Pow*num2Pow)/(Math.pow(10,xsd1)*Math.pow(10,xsd2))
+}
+
+//NumberToString
+function covertNumberToString(number,x){
+    if(arguments.length<2){
+        x=10;
+    }
+    var integer=Math.floor(number);
+    var fraction=getFranction(number);
+    var string='';
+    while(integer>0){
+        var tem=integer%x;
+        //兼容10进制以上进制
+        if(tem>9){
+            tem=String.fromCharCode(tem+55);
+        }
+        string=tem+string;
+        integer=Math.floor(integer/x);
+    }
+    var str2="";
+    console.log(fraction)
+    //fraction为0或最终结果小数点后已有16位，则停止
+    while(fraction!=0&&str2.length<17){
+        fraction=mult(fraction,x);
+        var tem=Math.floor(fraction);
+        //兼容10进制以上进制
+        if(tem>9){
+            //9以上数字的字母表达
+            tem=String.fromCharCode(tem+55);
+        }
+        str2=String(str2+tem);
+        //取出小数部分
+        if(Math.floor(fraction)%x>0){
+            fraction=getFranction(fraction);
+        }
+
+    }
+    return string+'.'+str2;
+}
+//10.01转换2仅只是无限循环小数，所以要设置小数位的最大长度，不然就是死循环了
+console.log(covertNumberToString(10.01,32));
